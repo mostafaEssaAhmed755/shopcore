@@ -1,0 +1,200 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+Table users {
+  id integer [primary key]
+  first_name varchar
+  last_name varchar
+  email varchar [not null, unique]
+  password varchar
+  role varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table addresses {
+  id integer [primary key]
+  user_id integer [not null]
+  region varchar [not null]
+  city varchar [not null]
+  street varchar [not null]
+  building varchar
+  floor varchar
+  appartment varchar
+  postal_code varchar
+  phone varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table categories {
+  id integer [primary key]
+  name varchar
+  image varchar
+  parent_id integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table category_product {
+  id integer [primary key]
+  category_id integer [not null]
+  product_id integer [not null]
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (category_id, product_id) [unique]
+  }
+}
+
+Table products {
+  id integer [primary key]
+  name varchar
+  description varchar
+  slug varchar [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+
+Table product_variants {
+  id integer [primary key]
+  product_id integer [not null]
+  stock integer
+  price integer
+  sku varchar [unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table attributes {
+  id integer [primary key]
+  name varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table attribute_values {
+  id integer [primary key]
+  attribute_id integer [not null]
+  value varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table attribute_value_product_variant {
+  id integer [primary key]
+  product_variant_id integer [not null]
+  attribute_value_id integer [not null]
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (product_variant_id, attribute_value_id) [unique]
+  }
+}
+
+Table carts {
+  id integer [primary key]
+  user_id integer [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table cart_items {
+  id integer [primary key]
+  cart_id integer [not null]
+  product_variant_id integer [not null]
+  quantity integer
+  created_at timestamp
+  updated_at timestamp 
+ 
+  Indexes {
+    (cart_id, product_variant_id) [unique]
+  }
+}
+
+
+Table orders {
+  id integer [primary key]
+  user_id integer [not null]
+  address_id integer
+  status orders_status
+  price integer
+  discount integer
+  shipping integer
+  tax integer
+  total integer
+  shipping_region varchar [not null]
+  shipping_city varchar [not null]
+  shipping_street varchar [not null]
+  shipping_building varchar
+  shipping_floor varchar
+  shipping_appartment varchar
+  shipping_postal_code varchar
+  shipping_phone varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_items {
+  id integer [primary key]
+  order_id integer [not null]
+  product_variant_id integer
+  product_name varchar
+  variant_label varchar
+  sku varchar
+  unit_price integer
+  quantity integer 
+  line_total integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table payments {
+  id integer [primary key]
+  order_id integer [not null]
+  method varchar
+  status payments_status
+  amount integer
+  gateway_reference varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+
+Enum orders_status { 
+  pending
+  paid
+  shipped
+  delivered
+  cancelled
+}
+
+Enum payments_status {
+  pending
+  success
+  failed
+}
+
+
+Ref: "categories"."id" <? "category_product"."category_id"
+Ref: "categories"."id" ?<? "categories"."parent_id"
+Ref: "products"."id" <? "category_product"."product_id"
+Ref: "products"."id" <? "product_variants"."product_id"
+Ref: "product_variants"."id" <? "cart_items"."product_variant_id"
+Ref: "product_variants"."id" <? "attribute_value_product_variant"."product_variant_id"
+Ref: "product_variants"."id" ?<? "order_items"."product_variant_id" [delete: set null]
+Ref: "attributes"."id" <? "attribute_values"."attribute_id"
+Ref: "attribute_values"."id" <? "attribute_value_product_variant"."attribute_value_id"
+Ref: "users"."id" <? "carts"."user_id"
+Ref: "users"."id" <? "orders"."user_id"
+Ref: "users"."id" <? "addresses"."user_id"
+Ref: "carts"."id" <? "cart_items"."cart_id"
+Ref: "orders"."id" <? "order_items"."order_id"
+Ref: "orders"."id" <? "payments"."order_id"
+Ref: "addresses"."id" ?<? "orders"."address_id" [delete: set null]
+
+
