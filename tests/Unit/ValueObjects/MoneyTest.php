@@ -42,7 +42,7 @@ it('multiplies the amount by a quantity', function() {
 });
 
 
-it('return the same amount number when multiply with 1', function() {
+it('returns the same amount when multiplied by 1', function() {
     $a = new Money(15000, 'EGP');
     
     expect($a->multiply(1))->toEqual(new Money(15000 , 'EGP'));
