@@ -30,7 +30,8 @@ Table addresses {
 
 Table categories {
   id integer [primary key]
-  name varchar
+  name varchar [not null]
+  slug varchar [not null, unique]
   image varchar
   parent_id integer
   created_at timestamp
@@ -181,7 +182,7 @@ Enum payments_status {
 
 
 Ref: "categories"."id" <? "category_product"."category_id"
-Ref: "categories"."id" ?<? "categories"."parent_id"
+Ref: "categories"."id" ?<? "categories"."parent_id" [delete: restrict]
 Ref: "products"."id" <? "category_product"."product_id"
 Ref: "products"."id" <? "product_variants"."product_id"
 Ref: "product_variants"."id" <? "cart_items"."product_variant_id"
