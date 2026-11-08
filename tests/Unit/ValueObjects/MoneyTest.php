@@ -34,3 +34,22 @@ it('does not change the original money when adding', function() {
 
     expect($a->amount)->toBe(1050);
 });
+
+it('multiplies the amount by a quantity', function() {
+    $a = new Money(15000, 'EGP');
+    
+    expect($a->multiply(3))->toEqual(new Money(45000 , 'EGP'));
+});
+
+
+it('returns the same amount when multiplied by 1', function() {
+    $a = new Money(15000, 'EGP');
+    
+    expect($a->multiply(1))->toEqual(new Money(15000 , 'EGP'));
+});
+
+it('throws when multiply quantity that is less than 1', function(int $quantity) {
+    $a = new Money(15000, 'EGP');
+    
+    expect(fn() => $a->multiply($quantity))->toThrow(InvalidArgumentException::class);
+})->with([0, -1, -100]);

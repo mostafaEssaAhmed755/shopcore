@@ -21,6 +21,15 @@ final readonly class Money
         return new Money(amount: $this->amount + $other->amount, currency: $this->currency);
     }
 
+    public function multiply(int $quantity): Money
+    {
+        if($quantity < 1) {
+            throw new \InvalidArgumentException("Quantity must be at least 1, got {$quantity}");
+        }
+
+        return new Money(amount: $this->amount * $quantity, currency: $this->currency);
+    }
+
     public function format(): string
     {
        
