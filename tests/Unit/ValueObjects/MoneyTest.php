@@ -2,7 +2,7 @@
 
 use App\ValueObjects\Money;
 
-it('adds tow amounts of the same currency', function() {
+it('adds two amounts of the same currency', function() {
     $a = new Money(1050, 'EGP');
     $b = new Money(250, 'EGP');
 
