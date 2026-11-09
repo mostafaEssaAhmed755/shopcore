@@ -32,6 +32,15 @@ it('cannot delete a category that has children', function () {
 });
 
 it('belongs to many products', function () {
+    $products = Product::factory()->count(3)->create();
+    $category = Category::factory()->create();
+
+    $category->products()->attach($products->pluck('id'));
+
+    expect($category->products)->toHaveCount(3);
+});
+
+it('stores timestamps on the category product pivot', function () {
     $product = Product::factory()->create();
     $category = Category::factory()->create();
 
