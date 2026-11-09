@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Database\QueryException;
 
 it('has many children', function () {
@@ -28,4 +29,13 @@ it('cannot delete a category that has children', function () {
     expect(fn() => $parent->delete())->toThrow(QueryException::class);
 
     expect(Category::find($parent->id))->not->toBeNull();
+});
+
+it('belongs to many products', function () {
+    $product = Product::factory()->create();
+    $category = Category::factory()->create();
+
+    $product->categories()->attach($category->id);
+
+    expect($product->categories->first()->pivot->created_at)->not->toBeNull();
 });

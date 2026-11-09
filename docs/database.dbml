@@ -52,9 +52,10 @@ Table category_product {
 
 Table products {
   id integer [primary key]
-  name varchar
-  description varchar
-  slug varchar [unique]
+  name varchar [not null]
+  slug varchar [not null, unique]
+  description text
+  is_published bool
   created_at timestamp
   updated_at timestamp
 }
@@ -181,9 +182,9 @@ Enum payments_status {
 }
 
 
-Ref: "categories"."id" <? "category_product"."category_id"
+Ref: "categories"."id" <? "category_product"."category_id" [delete: restrict]
 Ref: "categories"."id" ?<? "categories"."parent_id" [delete: restrict]
-Ref: "products"."id" <? "category_product"."product_id"
+Ref: "products"."id" <? "category_product"."product_id" [delete: cascade]
 Ref: "products"."id" <? "product_variants"."product_id"
 Ref: "product_variants"."id" <? "cart_items"."product_variant_id"
 Ref: "product_variants"."id" <? "attribute_value_product_variant"."product_variant_id"
