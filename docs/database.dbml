@@ -64,9 +64,9 @@ Table products {
 Table product_variants {
   id integer [primary key]
   product_id integer [not null]
-  stock integer
-  price integer
-  sku varchar [unique]
+  sku varchar [not null, unique]
+  stock integer [not null, note: 'unsigned']
+  price bigint [not null, note: 'unsigned, minor units']
   created_at timestamp
   updated_at timestamp
 }
@@ -189,12 +189,12 @@ Enum payments_status {
 Ref: "categories"."id" <? "category_product"."category_id" [delete: restrict]
 Ref: "categories"."id" ?<? "categories"."parent_id" [delete: restrict]
 Ref: "products"."id" <? "category_product"."product_id" [delete: cascade]
-Ref: "products"."id" <? "product_variants"."product_id"
+Ref: "products"."id" <? "product_variants"."product_id" [delete: cascade]
 Ref: "product_variants"."id" <? "cart_items"."product_variant_id"
-Ref: "product_variants"."id" <? "attribute_value_product_variant"."product_variant_id"
+Ref: "product_variants"."id" <? "attribute_value_product_variant"."product_variant_id" [delete: cascade]
 Ref: "product_variants"."id" ?<? "order_items"."product_variant_id" [delete: set null]
 Ref: "attributes"."id" <? "attribute_values"."attribute_id" [delete: restrict]
-Ref: "attribute_values"."id" <? "attribute_value_product_variant"."attribute_value_id"
+Ref: "attribute_values"."id" <? "attribute_value_product_variant"."attribute_value_id" [delete: restrict]
 Ref: "users"."id" <? "carts"."user_id"
 Ref: "users"."id" <? "orders"."user_id"
 Ref: "users"."id" <? "addresses"."user_id"
