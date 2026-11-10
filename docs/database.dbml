@@ -73,7 +73,7 @@ Table product_variants {
 
 Table attributes {
   id integer [primary key]
-  name varchar
+  name varchar [unique, not null]
   created_at timestamp
   updated_at timestamp
 }
@@ -81,9 +81,13 @@ Table attributes {
 Table attribute_values {
   id integer [primary key]
   attribute_id integer [not null]
-  value varchar
+  value varchar [not null]
   created_at timestamp
   updated_at timestamp
+
+  indexes {
+    (attribute_id, value) [unique]
+  }
 }
 
 Table attribute_value_product_variant {
@@ -189,7 +193,7 @@ Ref: "products"."id" <? "product_variants"."product_id"
 Ref: "product_variants"."id" <? "cart_items"."product_variant_id"
 Ref: "product_variants"."id" <? "attribute_value_product_variant"."product_variant_id"
 Ref: "product_variants"."id" ?<? "order_items"."product_variant_id" [delete: set null]
-Ref: "attributes"."id" <? "attribute_values"."attribute_id"
+Ref: "attributes"."id" <? "attribute_values"."attribute_id" [delete: restrict]
 Ref: "attribute_values"."id" <? "attribute_value_product_variant"."attribute_value_id"
 Ref: "users"."id" <? "carts"."user_id"
 Ref: "users"."id" <? "orders"."user_id"
