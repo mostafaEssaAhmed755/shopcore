@@ -58,4 +58,6 @@ it('cannot delete a value used by a variant', function () {
     $attributeValue->variants()->attach($variant->id);
 
     expect(fn() => $attributeValue->delete())->toThrow(QueryException::class);
+    expect(AttributeValue::find($attributeValue->id))->not->toBeNull();
+
 });
