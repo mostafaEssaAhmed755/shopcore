@@ -6,7 +6,7 @@ use App\Models\ProductVariant;
 
 it('belongs to many categories', function () {
     $product = Product::factory()->create();
-    
+
     $c1 = Category::factory()->create();
     $c2 = Category::factory()->create();
 
