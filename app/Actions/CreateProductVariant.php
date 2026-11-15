@@ -17,7 +17,7 @@ final readonly class CreateProductVariant
     {
         $attributeIds = AttributeValue::whereIn('id', $valueIds)->pluck('attribute_id');
 
-        $duplicates = collect($attributeIds)->duplicates();
+        $duplicates = $attributeIds->duplicates();
 
         if ($duplicates->isNotEmpty()) {
             throw new DuplicateAttributeException('A variant cannot have more than one value per attribute (attribute IDs: '.$duplicates->unique()->implode(', ').')');
