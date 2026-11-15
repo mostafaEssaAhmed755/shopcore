@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\ProductVariant;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
+use App\Models\ProductVariant;
 use Illuminate\Database\QueryException;
 
 it('belongs to an attribute', function () {
@@ -16,18 +16,18 @@ it('belongs to an attribute', function () {
 it('rejects duplicate values for the same attribute', function () {
     $attribute = Attribute::factory()->create();
 
-    expect(fn() => AttributeValue::factory()
-            ->count(2)
-            ->create(['attribute_id' => $attribute->id, 'value' => 'red'])
-        )->toThrow(QueryException::class);
+    expect(fn () => AttributeValue::factory()
+        ->count(2)
+        ->create(['attribute_id' => $attribute->id, 'value' => 'red'])
+    )->toThrow(QueryException::class);
 });
 
 it('allows the same value under different attributes', function () {
     $attribute1 = Attribute::factory()->create(['name' => 'Size']);
     $attribute2 = Attribute::factory()->create(['name' => 'Fit']);
 
-    AttributeValue::factory()->create(['attribute_id' => $attribute1->id,'value' => 'L']);
-    AttributeValue::factory()->create(['attribute_id' => $attribute2->id,'value' => 'L']);
+    AttributeValue::factory()->create(['attribute_id' => $attribute1->id, 'value' => 'L']);
+    AttributeValue::factory()->create(['attribute_id' => $attribute2->id, 'value' => 'L']);
 
     expect(AttributeValue::where('value', 'L')->count())->toBe(2);
 });
@@ -57,7 +57,7 @@ it('cannot delete a value used by a variant', function () {
 
     $attributeValue->variants()->attach($variant->id);
 
-    expect(fn() => $attributeValue->delete())->toThrow(QueryException::class);
+    expect(fn () => $attributeValue->delete())->toThrow(QueryException::class);
     expect(AttributeValue::find($attributeValue->id))->not->toBeNull();
 
 });

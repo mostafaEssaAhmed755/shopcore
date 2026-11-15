@@ -15,8 +15,7 @@ it('belongs to a product', function () {
 
 it('rejects duplicate skus', function () {
 
-    expect(fn() => 
-        ProductVariant::factory()->count(2)->create(['sku' => 'SKU-1234-FD'])
+    expect(fn () => ProductVariant::factory()->count(2)->create(['sku' => 'SKU-1234-FD'])
     )->toThrow(QueryException::class);
 });
 

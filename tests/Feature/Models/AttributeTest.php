@@ -10,5 +10,3 @@ it('has many values', function () {
 
     expect($attribute->values)->toHaveCount(3);
 });
-
-

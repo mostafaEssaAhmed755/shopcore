@@ -17,7 +17,6 @@ it('belongs to a parent', function () {
 
     $child = Category::factory()->create(['parent_id' => $parent->id]);
 
-
     expect($child->parent->id)->toBe($parent->id);
 });
 
@@ -26,7 +25,7 @@ it('cannot delete a category that has children', function () {
 
     Category::factory()->create(['parent_id' => $parent->id]);
 
-    expect(fn() => $parent->delete())->toThrow(QueryException::class);
+    expect(fn () => $parent->delete())->toThrow(QueryException::class);
 
     expect(Category::find($parent->id))->not->toBeNull();
 });

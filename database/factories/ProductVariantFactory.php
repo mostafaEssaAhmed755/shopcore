@@ -21,7 +21,7 @@ class ProductVariantFactory extends Factory
         return [
             'sku' => fake()->unique()->bothify('SKU-####-??'),
             'stock' => fake()->numberBetween(0, 100),
-            'price' => fake()->numberBetween(1000,100000),
+            'price' => fake()->numberBetween(1000, 100000),
             'product_id' => Product::factory(),
         ];
     }
