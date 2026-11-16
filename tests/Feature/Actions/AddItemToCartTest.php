@@ -76,7 +76,7 @@ it('does not touch other carts that have the same variant', function () {
         ->toBe(2);
 });
 
-it('variant stock 3، cart stock 4', function () {
+it('never reports a negative amount when stock drops below the cart quantity', function () {
     $cart = Cart::factory()->create();
     $variant = ProductVariant::factory()->create(['stock' => 4]);
 
@@ -85,5 +85,5 @@ it('variant stock 3، cart stock 4', function () {
     $variant->decrement('stock', 1);
 
     expect(fn () => (new AddItemToCart)->execute(cart: $cart, variant: $variant, quantity: 1))
-        ->toThrow(InsufficientStockException::class);
+        ->toThrow(InsufficientStockException::class, 'Only 0 more can be added');
 });
