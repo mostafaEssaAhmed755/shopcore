@@ -104,7 +104,8 @@ Table attribute_value_product_variant {
 
 Table carts {
   id integer [primary key]
-  user_id integer [not null]
+  user_id integer [unique]
+  token varchar [unique]
   created_at timestamp
   updated_at timestamp
 }
@@ -113,7 +114,7 @@ Table cart_items {
   id integer [primary key]
   cart_id integer [not null]
   product_variant_id integer [not null]
-  quantity integer
+  quantity integer [note: 'unsigned']
   created_at timestamp
   updated_at timestamp 
  
@@ -190,15 +191,15 @@ Ref: "categories"."id" <? "category_product"."category_id" [delete: restrict]
 Ref: "categories"."id" ?<? "categories"."parent_id" [delete: restrict]
 Ref: "products"."id" <? "category_product"."product_id" [delete: cascade]
 Ref: "products"."id" <? "product_variants"."product_id" [delete: cascade]
-Ref: "product_variants"."id" <? "cart_items"."product_variant_id"
+Ref: "product_variants"."id" <? "cart_items"."product_variant_id" [delete: cascade]
 Ref: "product_variants"."id" <? "attribute_value_product_variant"."product_variant_id" [delete: cascade]
 Ref: "product_variants"."id" ?<? "order_items"."product_variant_id" [delete: set null]
 Ref: "attributes"."id" <? "attribute_values"."attribute_id" [delete: restrict]
 Ref: "attribute_values"."id" <? "attribute_value_product_variant"."attribute_value_id" [delete: restrict]
-Ref: "users"."id" <? "carts"."user_id"
+Ref: "users"."id" ?<? "carts"."user_id" [delete: cascade]
 Ref: "users"."id" <? "orders"."user_id"
 Ref: "users"."id" <? "addresses"."user_id"
-Ref: "carts"."id" <? "cart_items"."cart_id"
+Ref: "carts"."id" <? "cart_items"."cart_id" [delete: cascade]
 Ref: "orders"."id" <? "order_items"."order_id"
 Ref: "orders"."id" <? "payments"."order_id"
 Ref: "addresses"."id" ?<? "orders"."address_id" [delete: set null]
