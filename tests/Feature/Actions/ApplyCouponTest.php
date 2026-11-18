@@ -38,13 +38,13 @@ it('rejects a coupon that has not started yet', function () {
         ->toThrow(InvalidCouponException::class, InvalidCouponException::notStarted()->getMessage());
 });
 
-it('rejects a coupon that reached its usage limit', function () {
-    $coupon = Coupon::factory()->create(['max_uses' => 5, 'used_count' => 6]);
+it('rejects a coupon that reached its usage limit', function (int $usedCount) {
+    $coupon = Coupon::factory()->create(['max_uses' => 5, 'used_count' => $usedCount]);
     $subtotal = new Money(10000, 'EGP');
 
     expect(fn () => (new ApplyCoupon)->execute($coupon, $subtotal))
         ->toThrow(InvalidCouponException::class, InvalidCouponException::usageLimitReached()->getMessage());
-});
+})->with([5, 6]);
 
 it('allows a coupon with uses remaining', function () {
     $coupon = Coupon::factory()->create(['type' => CouponType::Percentage, 'value' => 25, 'max_uses' => 5, 'used_count' => 4]);
