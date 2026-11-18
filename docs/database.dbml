@@ -13,6 +13,21 @@ Table users {
   updated_at timestamp
 }
 
+Table coupons {
+  id integer [primary key]
+  code varchar  [not null, unique]
+  type varchar [not null]
+  value "integer unsigned"
+  min_subtotal "bigint unsigned"
+  max_uses integer
+  used_count integer [default: 0]
+  starts_at timestamp
+  expires_at timestamp
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+}
+
 Table addresses {
   id integer [primary key]
   user_id integer [not null]
@@ -65,8 +80,8 @@ Table product_variants {
   id integer [primary key]
   product_id integer [not null]
   sku varchar [not null, unique]
-  stock integer [not null, note: 'unsigned']
-  price bigint [not null, note: 'unsigned, minor units']
+  stock "integer unsigned" [not null]
+  price "bigint unsigned" [not null, note: 'minor units']
   created_at timestamp
   updated_at timestamp
 }
@@ -114,7 +129,7 @@ Table cart_items {
   id integer [primary key]
   cart_id integer [not null]
   product_variant_id integer [not null]
-  quantity integer [note: 'unsigned']
+  quantity "integer unsigned"
   created_at timestamp
   updated_at timestamp 
  
@@ -142,6 +157,8 @@ Table orders {
   shipping_appartment varchar
   shipping_postal_code varchar
   shipping_phone varchar [not null]
+  coupon_id integer
+  coupon_code varchar
   created_at timestamp
   updated_at timestamp
 }
@@ -196,12 +213,11 @@ Ref: "product_variants"."id" <? "attribute_value_product_variant"."product_varia
 Ref: "product_variants"."id" ?<? "order_items"."product_variant_id" [delete: set null]
 Ref: "attributes"."id" <? "attribute_values"."attribute_id" [delete: restrict]
 Ref: "attribute_values"."id" <? "attribute_value_product_variant"."attribute_value_id" [delete: restrict]
-Ref: "users"."id" ?<? "carts"."user_id" [delete: cascade]
+Ref: "users"."id" ?- "carts"."user_id" [delete: cascade]
 Ref: "users"."id" <? "orders"."user_id"
 Ref: "users"."id" <? "addresses"."user_id"
 Ref: "carts"."id" <? "cart_items"."cart_id" [delete: cascade]
 Ref: "orders"."id" <? "order_items"."order_id"
 Ref: "orders"."id" <? "payments"."order_id"
 Ref: "addresses"."id" ?<? "orders"."address_id" [delete: set null]
-
-
+Ref: "coupons"."id" ?<? "orders"."coupon_id" [delete: set null]
