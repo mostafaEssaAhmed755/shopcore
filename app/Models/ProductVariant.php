@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\ValueObjects\Money;
 use Database\Factories\ProductVariantFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,5 +24,10 @@ class ProductVariant extends Model
     public function attributeValues(): BelongsToMany
     {
         return $this->belongsToMany(AttributeValue::class)->withTimestamps();
+    }
+
+    public function priceMoney(): Money
+    {
+        return new Money($this->price, config('shop.currency'));
     }
 }
