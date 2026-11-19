@@ -3,6 +3,7 @@
 use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\ValueObjects\Money;
 use Illuminate\Database\QueryException;
 
 it('belongs to a product', function () {
@@ -45,4 +46,11 @@ it('stores timestamps on the attribute value product variant pivot', function ()
     $variant->attributeValues()->attach($attributeValue->id);
 
     expect($variant->attributeValues->first()->pivot->created_at)->not->toBeNull();
+});
+
+it('returns the price as Money in the shop currency', function () {
+    config(['shop.currency' => 'USD']);
+    $variant = ProductVariant::factory()->create(['price' => 15000]);
+
+    expect($variant->priceMoney())->toEqual(new Money(15000, 'USD'));
 });

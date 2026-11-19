@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Events\VariantCreated;
 use App\Exceptions\DuplicateAttributeException;
 use App\Models\AttributeValue;
 use App\Models\Product;
@@ -31,6 +32,8 @@ final readonly class CreateProductVariant
             ]);
 
             $variant->attributeValues()->attach($valueIds);
+
+            event(new VariantCreated($variant));
 
             return $variant;
         });
