@@ -52,3 +52,26 @@ it('throws when multiply quantity that is less than 1', function (int $quantity)
 
     expect(fn () => $a->multiply($quantity))->toThrow(InvalidArgumentException::class);
 })->with([0, -1, -100]);
+
+it('creates money from a decimal string', function (string $amount, int $result) {
+    $money = Money::fromDecimal($amount, 'USD');
+    expect($money->amount)->toBe($result)
+        ->and($money->currency)->toBe('USD');
+})->with([
+    ['150', 15000],
+    ['150.5', 15050],
+    ['150.05', 15005],
+    ['19.99', 1999],
+    ['0.01', 1],
+]);
+
+it('rejects an invalid decimal string', function (string $amount) {
+    expect(fn () => Money::fromDecimal($amount, 'USD'))->toThrow(InvalidArgumentException::class);
+})->with([
+    '150.005',
+    '-5',
+    'abc',
+    '',
+    '1,000',
+    'trailing newline' => "150\n",
+]);
