@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\CreateProductVariant;
+use App\Data\CreateVariantData;
 use App\Events\VariantCreated;
 use App\Exceptions\DuplicateAttributeException;
 use App\Models\Attribute;
@@ -19,10 +20,12 @@ it('creates a variant with its attribute values', function () {
     $price = new Money(15000, 'EGP');
     $variant = (new CreateProductVariant)->execute(
         product: $product,
-        sku: 'TS-RED-XL',
-        price: $price,
-        stock: 10,
-        valueIds: [$red->id, $xl->id]
+        data: new CreateVariantData(
+            sku: 'TS-RED-XL',
+            price: $price,
+            stock: 10,
+            valueIds: [$red->id, $xl->id]
+        )
     );
 
     expect($variant)->not()->toBeNull()
@@ -38,10 +41,12 @@ it('does not create the variant if attaching values fails', function () {
 
     expect(fn () => (new CreateProductVariant)->execute(
         product: $product,
-        sku: 'TS-RED-XL',
-        price: new Money(15000, 'EGP'),
-        stock: 10,
-        valueIds: [999]
+        data: new CreateVariantData(
+            sku: 'TS-RED-XL',
+            price: new Money(15000, 'EGP'),
+            stock: 10,
+            valueIds: [999]
+        )
     ))->toThrow(QueryException::class);
 
     expect(ProductVariant::count())->toBe(0);
@@ -55,10 +60,12 @@ it('rejects two values of the same attribute', function () {
 
     expect(fn () => (new CreateProductVariant)->execute(
         product: $product,
-        sku: 'TS-RED-XL',
-        price: new Money(15000, 'EGP'),
-        stock: 10,
-        valueIds: [$value1->id, $value2->id]
+        data: new CreateVariantData(
+            sku: 'TS-RED-XL',
+            price: new Money(15000, 'EGP'),
+            stock: 10,
+            valueIds: [$value1->id, $value2->id]
+        )
     ))->toThrow(DuplicateAttributeException::class);
 
     expect(ProductVariant::count())->toBe(0);
@@ -74,10 +81,12 @@ it('dispatches VariantCreated with the new variant', function () {
     $price = new Money(15000, 'EGP');
     $variant = (new CreateProductVariant)->execute(
         product: $product,
-        sku: 'TS-RED-XL',
-        price: $price,
-        stock: 10,
-        valueIds: [$red->id, $xl->id]
+        data: new CreateVariantData(
+            sku: 'TS-RED-XL',
+            price: $price,
+            stock: 10,
+            valueIds: [$red->id, $xl->id]
+        )
     );
 
     Event::assertDispatched(VariantCreated::class, fn ($e) => $e->variant->is($variant));
@@ -91,10 +100,12 @@ it('does not dispatch VariantCreated when creation fails', function () {
     $price = new Money(15000, 'EGP');
     expect(fn () => (new CreateProductVariant)->execute(
         product: $product,
-        sku: 'TS-RED-XL',
-        price: $price,
-        stock: 10,
-        valueIds: [999]
+        data: new CreateVariantData(
+            sku: 'TS-RED-XL',
+            price: $price,
+            stock: 10,
+            valueIds: [999]
+        )
     ))->toThrow(QueryException::class);
 
     Event::assertNotDispatched(VariantCreated::class);
