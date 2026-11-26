@@ -33,7 +33,7 @@ it('works with a fixed discount too', function () {
     expect($discount->amount)->toBe(10000);
 });
 
-it('rejects a cap below 1', function (int $amount) {
-    expect(fn () => new CappedDiscount(new FixedAmountDiscount, $amount)
+it('rejects a cap below 1', function (int $cap) {
+    expect(fn () => new CappedDiscount(new FixedAmountDiscount, $cap)
     )->toThrow(InvalidArgumentException::class);
 })->with([0, -1]);
