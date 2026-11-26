@@ -1,5 +1,6 @@
 <?php
 
+use App\Discounts\CappedDiscount;
 use App\Discounts\DiscountStrategy;
 use App\Discounts\FixedAmountDiscount;
 use App\Discounts\PercentageDiscount;
@@ -8,6 +9,7 @@ use App\ValueObjects\Money;
 dataset('strategies', [
     'percentage' => [new PercentageDiscount, 100],
     'fixed' => [new FixedAmountDiscount, 100],
+    'capped percentage' => [new CappedDiscount(new PercentageDiscount, 5_000), 100],
 ]);
 
 dataset('subtotals', [
