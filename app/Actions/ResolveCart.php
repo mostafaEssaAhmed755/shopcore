@@ -19,7 +19,7 @@ final readonly class ResolveCart
         }
 
         if ($token !== null) {
-            $cart = Cart::whereNull('user_id')->where('token', $token)->first();
+            $cart = Cart::guest()->where('token', $token)->first();
 
             if ($cart !== null) {
                 return $cart;

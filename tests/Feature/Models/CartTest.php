@@ -40,3 +40,10 @@ it('rejects a second cart for the same user', function () {
     expect(fn () => Cart::factory()->count(2)->create(['user_id' => $user->id]))
         ->toThrow(QueryException::class);
 });
+
+it('guest scope returns only carts without a user', function () {
+    Cart::factory()->create();
+    $guestCart = Cart::factory()->create(['user_id' => null]);
+
+    expect(Cart::guest()->pluck('id')->all())->toBe([$guestCart->id]);
+});
